@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/MonsterVaniaGhost Land.mp3-d835b461f3796d0c7ca7a990715ddcaa.mp3str"
+
+[deps]
+
+source_file="res://assets/music/MonsterVaniaGhost Land.mp3"
+dest_files=[ "res://.import/MonsterVaniaGhost Land.mp3-d835b461f3796d0c7ca7a990715ddcaa.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
