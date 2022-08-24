@@ -18,9 +18,9 @@ onready var splats = $splats
 var player_spawn_point = Vector2()
 
 var conga = []
-var max_npcs = 5
+var max_npcs = 50
 var car_rate = 1
-var npc_rate = 1
+var npc_rate = 4
 var can_spawn_cars = true
 var can_spawn_npcs = true
 var currenthorde = 0
@@ -50,16 +50,32 @@ func _relative_position_to_screen(relative):
 
 func add_zombie(zombie):
 	conga.append(zombie)
+	if (!zombie.is_in_group("player")):
+		if conga.size() > 1:
+			zombie.set_following(conga[conga.size()-2])
+		else:
+			zombie.set_following(conga[0])
+		zombie.connect("kill_zombie", self, "_on_kill_zombie")
 
-func get_following(zombie):
-	var pos = conga.bsearch(zombie)
-	print(pos)
-	if pos:
-		return conga[pos-1]
+func _on_kill_zombie(zombie):
+	kill(zombie)
 
 func kill(node):
-	var pos = conga.bsearch(node)	
+	var id = node.get_instance_id()
+	var pos = null
+	for i in range(1, conga.size()):
+		if conga[i].get_instance_id() == id:
+			pos = i
+			break
+	
+	if pos < 1:
+		return
+
 	var zombie = conga.pop_at(pos)
+
+	if (pos < conga.size()):
+		conga[pos].set_following(conga[pos-1])
+
 	if (zombie != null and zombie.is_in_group("zombie")):
 		var newsplat = splat.instance()
 		newsplat.position = zombie.position
@@ -81,8 +97,12 @@ func spawn_npc():
 		var newnpc = npc.instance()
 		newnpc.position = Vector2(int(randi() % int(screen.x)), int(randi() % int(screen.y)))
 		y_sort.add_child(newnpc)
+		newnpc.connect("convert_zombie", self, "_on_convert_zombie")
 		yield(get_tree().create_timer(npc_rate), "timeout")
 		can_spawn_npcs = true
+
+func _on_convert_zombie(zombie):
+	add_zombie(zombie)
 
 func spawn_car():
 	if can_spawn_cars:

@@ -7,14 +7,14 @@
 friction = 0.0
 bounce = 0.2
 
-[sub_resource type="CircleShape2D" id=29]
-radius = 4.0
-
 [sub_resource type="CircleShape2D" id=30]
 radius = 62.0081
 
+[sub_resource type="CircleShape2D" id=29]
+radius = 7.0
+
 [sub_resource type="CircleShape2D" id=28]
-radius = 3.0
+radius = 7.0
 
 [node name="Npc" type="RigidBody2D" groups=["npcs"]]
 collision_layer = 3
@@ -32,20 +32,20 @@ frames = ExtResource( 2 )
 animation = "down"
 frame = 2
 
-[node name="HitArea" type="Area2D" parent="."]
-collision_layer = 3
-collision_mask = 3
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
-position = Vector2( 0, 3 )
-shape = SubResource( 29 )
-
 [node name="ScareArea" type="Area2D" parent="."]
 
 [node name="RunAway" type="CollisionShape2D" parent="ScareArea"]
 modulate = Color( 1, 0, 0, 0.254902 )
 show_behind_parent = true
 shape = SubResource( 30 )
+
+[node name="HitArea" type="Area2D" parent="."]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+position = Vector2( 0, 2 )
+shape = SubResource( 29 )
 
 [node name="State" type="Node" parent="."]
 
@@ -54,10 +54,10 @@ shape = SubResource( 30 )
 [node name="Zombie" type="Node" parent="State"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 4 )
+visible = false
+position = Vector2( 0, 2 )
 shape = SubResource( 28 )
 
-[connection signal="body_entered" from="HitArea" to="." method="_on_Area2D_body_entered"]
-[connection signal="body_entered" from="HitArea" to="." method="_on_HitArea_body_entered"]
 [connection signal="body_entered" from="ScareArea" to="." method="_on_ScareArea_body_entered"]
 [connection signal="body_exited" from="ScareArea" to="." method="_on_ScareArea_body_exited"]
+[connection signal="body_entered" from="HitArea" to="." method="_on_HitArea_body_entered"]

@@ -29,7 +29,8 @@ func _get_input():
 
 func _physics_process(_delta):
 	_get_input()
-	velocity = apply_central_impulse(velocity)
+	#velocity = apply_central_impulse(velocity)
+	apply_central_impulse(velocity)
 
 func _integrate_forces(_state):
 	_get_input()

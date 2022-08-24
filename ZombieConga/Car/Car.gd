@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-export (int) var speed = 1
+export (int) var speed = 50
 
 export(Array, SpriteFrames) var framesets=[]
 
@@ -29,10 +29,10 @@ func set_direction(dir):
 		elif dir.y > abs(dir.x):
 			_animated_sprite.play("down")
 
-func _physics_process(delta):
-	move_and_collide(velocity)
+func _physics_process(_delta):
+	move_and_slide(velocity)
 
-func _process(delta):
+func _process(_delta):
 	var screen = get_viewport().size
 	if (_animated_sprite.get_animation() == "left" and position.x < 0):
 		queue_free()

@@ -22,22 +22,18 @@ var iddle_direction = Vector2()
 var iddle_speed = 0.5
 var index
 
-var level
+signal kill_zombie(zombie)
+signal convert_zombie(human)
 
 func _ready():
 	randomize()
-
-	level = get_tree().get_nodes_in_group("level")[0]
 
 	set_human()
 	
 	var frameset = framesets[randi() % framesets.size()]
 	_animated_sprite.frames = load("res://assets/%s" % frameset)
 
-func _process(delta):
-	pass
-
-func _integrate_forces(state):
+func _integrate_forces(_state):
 	if is_zombie:
 		process_follow()
 	if is_human:
@@ -51,7 +47,7 @@ func _on_HitArea_body_entered(body):
 		if body.is_in_group("player"):
 			process_bite()
 	elif body.is_in_group("cars"):
-		process_car()
+		emit_signal("kill_zombie", self)
 
 func _on_ScareArea_body_entered(body):
 	if (body.is_in_group("player")):
@@ -62,9 +58,7 @@ func _on_ScareArea_body_exited(body):
 	if (body.is_in_group("player")):
 		if is_human:
 			is_scared_from = null
-
-func process_car():
-	level.kill(self)
+	
 
 func process_bite():
 	health -= 1
@@ -76,19 +70,17 @@ func convert_zombie():
 	is_zombie = true
 	is_human = false
 	is_scared_from = null
-	level.add_zombie(self)
+	emit_signal("convert_zombie", self)
 	_animated_sprite.modulate = Color.aquamarine
 
-func get_following():
-	if (following == null or !is_instance_valid(following) or !following.is_in_group("zombie")):
-		following = level.get_following(self)
-	return following
+func set_following(zombie):
+	following = zombie
 
 func process_follow():
-	if (get_following() != null and is_instance_valid(following) and get_following().is_in_group("zombie")):
-		var following_dinstance = global_position.distance_to(get_following().global_position)
+	if (following != null and is_instance_valid(following) and following.is_in_group("zombie")):
+		var following_dinstance = global_position.distance_to(following.global_position)
 		if (following_dinstance > 20):
-			var dir = (get_following().global_position - global_position).normalized()
+			var dir = (following.global_position - global_position).normalized()
 			dir = dir * speed
 			apply_central_impulse(dir)
 
