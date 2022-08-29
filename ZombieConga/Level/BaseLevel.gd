@@ -18,7 +18,7 @@ onready var splats = $splats
 var player_spawn_point = Vector2()
 
 var conga = []
-var max_npcs = 50
+var max_npcs = 5
 var car_rate = 1
 var npc_rate = 4
 var can_spawn_cars = true
